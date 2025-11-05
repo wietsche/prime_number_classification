@@ -4,11 +4,11 @@ Machine Learning project for classifying prime numbers using various algorithms 
 
 ## Overview
 
-This project generates a dataset of prime and non-prime numbers (ending in 1, 3, 7, or 9) up to 2^16 (65,536), extracts multiple features for each number, and trains various machine learning models to classify them. The project includes:
+This project generates a dataset of prime and non-prime numbers (ending in 1, 3, 7, or 9) up to 2^16 (65,536), extracts digit patterns and basic properties for each number, and trains various machine learning models to classify them. The project includes:
 
 - Prime number generation with specific constraints
 - Balanced dataset creation (equal primes and non-primes)
-- Comprehensive feature engineering (28 features per number)
+- Feature engineering using digit patterns and basic properties (12 features per number)
 - Multiple ML algorithms with hyperparameter tuning
 - Model evaluation and comparison
 - Feature importance analysis
@@ -19,12 +19,8 @@ This project generates a dataset of prime and non-prime numbers (ending in 1, 3,
 For each number, the following features are computed:
 
 1. **Basic Properties**: last digit, sum of digits, number of digits, first digit
-2. **Divisibility Tests**: divisible by 2, 3, 5, 7, 11
-3. **Modulo Operations**: mod 4, 6, 8, 9, 10
-4. **Mathematical Properties**: square root, logarithm, even/odd flags
-5. **Digit Patterns**: alternation, max/min digits, range, variance, standard deviation
-6. **Factor Analysis**: approximate factor count
-7. **Digit Operations**: product of digits
+2. **Digit Patterns**: alternation, max/min digits, range, variance, standard deviation
+3. **Digit Operations**: product of digits
 
 ## Machine Learning Models
 

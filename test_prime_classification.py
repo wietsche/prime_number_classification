@@ -72,20 +72,22 @@ class TestPrimeClassification(unittest.TestCase):
         self.assertEqual(features['sum_of_digits'], 4)  # 1 + 3
         self.assertEqual(features['first_digit'], 1)
         
-        # Check divisibility
-        self.assertEqual(features['divisible_by_2'], 0)
-        self.assertEqual(features['divisible_by_3'], 0)
-        
-        # Check is_odd
-        self.assertEqual(features['is_odd'], 1)
-        self.assertEqual(features['is_even'], 0)
+        # Check digit patterns
+        self.assertEqual(features['digit_alternation'], 1)  # 1 != 3
+        self.assertEqual(features['max_digit'], 3)
+        self.assertEqual(features['min_digit'], 1)
     
     def test_features_have_correct_count(self):
         """Test that we generate the expected number of features"""
         features = calculate_features(123)
         
-        # Should have 27 features (including number itself, prime added separately)
-        self.assertEqual(len(features), 27)
+        # Should have 12 features (including number itself, prime added separately)
+        # Basic properties: number, last_digit, sum_of_digits, num_digits, first_digit (5)
+        # Digit patterns: digit_alternation, max_digit, min_digit, digit_range (4)
+        # Digit operations: product_of_digits (1)
+        # Variance: digit_variance, digit_std (2)
+        # Total: 5 + 4 + 1 + 2 = 12
+        self.assertEqual(len(features), 12)
     
     def test_edge_case_small_numbers(self):
         """Test with small numbers"""

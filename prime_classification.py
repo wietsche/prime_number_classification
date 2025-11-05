@@ -19,7 +19,6 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Constants
-MAX_FACTOR_CHECK = 100  # Maximum number to check for factor counting approximation
 LOGISTIC_REGRESSION_MAX_ITER = 1000  # Maximum iterations for logistic regression
 
 
@@ -72,7 +71,7 @@ def generate_non_primes(primes, max_val):
 
 
 def calculate_features(n):
-    """Calculate computationally simple features for a number"""
+    """Calculate digit patterns and basic properties for a number"""
     features = {}
     
     # Basic properties
@@ -82,26 +81,6 @@ def calculate_features(n):
     features['num_digits'] = len(str(n))
     features['first_digit'] = int(str(n)[0])
     
-    # Divisibility features
-    features['divisible_by_2'] = 1 if n % 2 == 0 else 0
-    features['divisible_by_3'] = 1 if n % 3 == 0 else 0
-    features['divisible_by_5'] = 1 if n % 5 == 0 else 0
-    features['divisible_by_7'] = 1 if n % 7 == 0 else 0
-    features['divisible_by_11'] = 1 if n % 11 == 0 else 0
-    
-    # Modulo operations
-    features['mod_4'] = n % 4
-    features['mod_6'] = n % 6
-    features['mod_8'] = n % 8
-    features['mod_9'] = n % 9
-    features['mod_10'] = n % 10
-    
-    # Mathematical properties
-    features['square_root'] = np.sqrt(n)
-    features['log_value'] = np.log(n + 1)  # +1 to avoid log(0)
-    features['is_even'] = 1 if n % 2 == 0 else 0
-    features['is_odd'] = 1 if n % 2 == 1 else 0
-    
     # Digit patterns
     digits_str = str(n)
     features['digit_alternation'] = sum(1 for i in range(len(digits_str)-1) 
@@ -109,13 +88,6 @@ def calculate_features(n):
     features['max_digit'] = max(int(d) for d in digits_str)
     features['min_digit'] = min(int(d) for d in digits_str)
     features['digit_range'] = features['max_digit'] - features['min_digit']
-    
-    # Count factors (computationally simple approximation)
-    factor_count = 0
-    for i in range(1, min(MAX_FACTOR_CHECK, n+1)):
-        if n % i == 0:
-            factor_count += 1
-    features['factor_count_approx'] = factor_count
     
     # Product of digits
     features['product_of_digits'] = np.prod([int(d) for d in digits_str])
