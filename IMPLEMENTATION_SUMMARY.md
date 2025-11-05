@@ -12,13 +12,9 @@ Complete machine learning implementation for prime number classification as spec
 - **Output**: `prime_dataset.csv` (1.5 MB, 13,080 samples)
 
 ### 2. Feature Engineering ✓
-Calculated 27 features for each number:
-- Basic properties (last digit, sum/product of digits, number of digits, etc.)
-- Divisibility tests (by 2, 3, 5, 7, 11)
-- Modulo operations (mod 4, 6, 8, 9, 10)
-- Mathematical properties (square root, logarithm, even/odd)
-- Digit patterns (alternation, variance, standard deviation, min/max)
-- Factor counting approximation
+Calculated 12 features for each number:
+- Basic properties (last digit, sum/product of digits, number of digits, first digit)
+- Digit patterns (alternation, variance, standard deviation, min/max, range)
 
 ### 3. Dataset Labeling ✓
 - Prime numbers: labeled as 1
@@ -118,7 +114,7 @@ python -m unittest test_prime_classification
 ## Key Technical Decisions
 
 1. **Prime detection**: Trial division algorithm (simple and effective for range up to 2^16)
-2. **Feature selection**: Computationally simple operations (as specified)
+2. **Feature selection**: Digit patterns and basic properties only (as specified)
 3. **Balancing**: Random sampling to ensure equal prime/non-prime counts
 4. **Scaling**: Applied StandardScaler for Logistic Regression and SVM
 5. **Validation**: 3-fold CV during hyperparameter search
