@@ -18,6 +18,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 import warnings
 warnings.filterwarnings('ignore')
 
+# Constants
+MAX_FACTOR_CHECK = 100  # Maximum number to check for factor counting approximation
+LOGISTIC_REGRESSION_MAX_ITER = 1000  # Maximum iterations for logistic regression
+
 
 def is_prime(n):
     """Check if a number is prime"""
@@ -49,26 +53,20 @@ def generate_non_primes(primes, max_val):
     n = 1
     target_count = len(primes)
     
-    while len(non_primes) < target_count and n <= max_val:
+    # First pass: collect all non-primes within max_val
+    while n <= max_val:
         last_digit = n % 10
         if last_digit in [1, 3, 7, 9] and not is_prime(n) and n > 1:
             non_primes.append(n)
         n += 1
     
-    # If we don't have enough, wrap around and sample
-    if len(non_primes) < target_count:
-        # Generate more non-primes by checking larger ranges
-        n = 1
-        while len(non_primes) < target_count:
-            last_digit = n % 10
-            if last_digit in [1, 3, 7, 9] and not is_prime(n) and n > 1:
-                if n not in non_primes:
-                    non_primes.append(n)
-            n += 1
-    
-    # Sample to match exactly
+    # Sample to match exactly the target count
     np.random.seed(42)
-    non_primes = list(np.random.choice(non_primes, size=target_count, replace=False))
+    if len(non_primes) >= target_count:
+        non_primes = list(np.random.choice(non_primes, size=target_count, replace=False))
+    else:
+        # If we don't have enough, use all available and sample with replacement
+        non_primes = list(np.random.choice(non_primes, size=target_count, replace=True))
     
     return non_primes
 
@@ -114,7 +112,7 @@ def calculate_features(n):
     
     # Count factors (computationally simple approximation)
     factor_count = 0
-    for i in range(1, min(100, n+1)):
+    for i in range(1, min(MAX_FACTOR_CHECK, n+1)):
         if n % i == 0:
             factor_count += 1
     features['factor_count_approx'] = factor_count
@@ -210,7 +208,7 @@ def train_models(X_train, y_train, X_test, y_test):
             }
         },
         'Logistic Regression': {
-            'model': LogisticRegression(random_state=42, max_iter=1000),
+            'model': LogisticRegression(random_state=42, max_iter=LOGISTIC_REGRESSION_MAX_ITER),
             'params': {
                 'C': [0.1, 1, 10],
                 'penalty': ['l2'],
