@@ -4,11 +4,14 @@ Unit tests for prime classification functions
 
 import unittest
 import numpy as np
+import pandas as pd
 from prime_classification import (
     is_prime, 
     generate_primes, 
     calculate_features,
-    generate_non_primes
+    generate_non_primes,
+    create_pca_transformer,
+    perform_clustering
 )
 
 
@@ -101,6 +104,62 @@ class TestPrimeClassification(unittest.TestCase):
         features = calculate_features(3)
         self.assertEqual(features['num_digits'], 1)
         self.assertEqual(features['sum_of_digits'], 3)
+    
+    def test_pca_transformer_creation(self):
+        """Test PCA transformer creation"""
+        # Create a small dataset
+        np.random.seed(42)
+        X_train = pd.DataFrame(np.random.randn(100, 12))
+        
+        pca, scaler = create_pca_transformer(X_train, n_components=2)
+        
+        # Check that PCA and scaler are created
+        self.assertIsNotNone(pca)
+        self.assertIsNotNone(scaler)
+        
+        # Check PCA properties
+        self.assertEqual(pca.n_components_, 2)
+        self.assertEqual(len(pca.explained_variance_ratio_), 2)
+        
+        # Check that variance ratios sum to less than or equal to 1
+        self.assertLessEqual(sum(pca.explained_variance_ratio_), 1.0)
+    
+    def test_pca_transformation(self):
+        """Test that PCA transformation works correctly"""
+        # Create a small dataset
+        np.random.seed(42)
+        X_train = pd.DataFrame(np.random.randn(100, 12))
+        
+        pca, scaler = create_pca_transformer(X_train, n_components=2)
+        
+        # Transform the data
+        X_scaled = scaler.transform(X_train)
+        X_pca = pca.transform(X_scaled)
+        
+        # Check transformed shape
+        self.assertEqual(X_pca.shape, (100, 2))
+    
+    def test_clustering(self):
+        """Test K-means clustering"""
+        # Create a small dataset
+        np.random.seed(42)
+        X_train = pd.DataFrame(np.random.randn(100, 12))
+        y_train = pd.Series([0, 1] * 50)
+        
+        pca, scaler = create_pca_transformer(X_train, n_components=2)
+        kmeans, cluster_labels = perform_clustering(X_train, y_train, pca, scaler, n_clusters=3)
+        
+        # Check clustering results
+        self.assertIsNotNone(kmeans)
+        self.assertIsNotNone(cluster_labels)
+        
+        # Check cluster properties
+        self.assertEqual(len(cluster_labels), 100)
+        self.assertEqual(kmeans.n_clusters, 3)
+        self.assertEqual(kmeans.cluster_centers_.shape, (3, 2))
+        
+        # Check that all cluster labels are valid
+        self.assertTrue(all(label in [0, 1, 2] for label in cluster_labels))
 
 
 if __name__ == '__main__':
