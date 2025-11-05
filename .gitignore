@@ -28,6 +28,7 @@ env/
 # Generated files
 prime_dataset.csv
 prime_classification_report.pdf
+pca_transformer.pkl
 
 # IDE
 .vscode/
